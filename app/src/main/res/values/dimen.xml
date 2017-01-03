@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="MSK_LAT" format="float" type="dimen">55.75</item>
+    <item name="MSK_LNG" format="float" type="dimen">37.61</item>
+</resources>

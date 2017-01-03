@@ -1,32 +1,39 @@
 package com.example.root.test1.fragments;
 
-import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.root.test1.R;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 
 /**
  * Created by root on 9/3/16.
  */
 
-public class Map extends SupportMapFragment {
-    
-    private String key = null;
+public class Map extends Fragment {
+
+    public MapView mMapView = null;
     public GoogleMap gmap;
+
+    private String key = null;
 
 
     @Override
@@ -38,15 +45,35 @@ public class Map extends SupportMapFragment {
         key = getString(R.string.KEY);
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
-        // mMapView.onResume(); // needed to get the map to display immediately
+        mMapView = (MapView) rootView.findViewById(R.id.mapView);
+        mMapView.onCreate(savedInstanceState);
+        mMapView.onResume(); // needed to get the map to display immediately
 
-        gmap = getMapFragment().getMap();
-
-        if (gmap == null) {
-            return null;
+        try {
+            MapsInitializer.initialize(getActivity().getApplicationContext());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
+        gmap = mMapView.getMap();
+        initMap(gmap);
+
         return rootView;
+    }
+
+    private void initMap(GoogleMap map) {
+
+        final float msk_lat = (float) 55.75;
+        final float msk_lng = (float) 37.61;
+        final float initZoom = (float) 11.5;
+        PicassoMarker target;
+
+        gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(msk_lat, msk_lng), initZoom));
+
+        MarkerOptions markerOne = new MarkerOptions().position(new LatLng(msk_lat, msk_lng)).title("marker title");
+
+        target = new PicassoMarker(map.addMarker(markerOne));
+        Picasso.with(getContext()).load("https://pp.vk.me/c633921/v633921379/154fd/uZbZsvwS2Q4.jpg").into(target);
     }
 
     private SupportMapFragment getMapFragment() {
@@ -78,5 +105,43 @@ public class Map extends SupportMapFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
     }
-}
 
+    public class PicassoMarker implements Target {
+
+        Marker mMarker;
+
+        PicassoMarker(Marker marker) {
+            mMarker = marker;
+        }
+
+        @Override
+        public int hashCode() {
+            return mMarker.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if(o instanceof PicassoMarker) {
+                Marker marker = ((PicassoMarker) o).mMarker;
+                return mMarker.equals(marker);
+            } else {
+                return false;
+            }
+        }
+
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            mMarker.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
+        }
+
+        public void onBitmapFailed(Drawable errorDrawable) {
+            int a = 0;
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+            int a = 0;
+        }
+
+    }
+
+}
