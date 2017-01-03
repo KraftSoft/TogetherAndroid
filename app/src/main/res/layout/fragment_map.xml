@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:text="Описание кота"
         android:textAlignment="center"
-        android:textColor="@color/wallet_holo_blue_light"
+        android:textColor="@color/colorPrimaryDark"
         android:layout_weight="0.10"
         android:layout_height="0dp" />
 
