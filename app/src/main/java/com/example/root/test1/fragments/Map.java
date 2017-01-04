@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.root.test1.R;
+import com.example.root.test1.utils.CircleTransform;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -56,12 +57,17 @@ public class Map extends Fragment {
         }
 
         gmap = mMapView.getMap();
-        initMap(gmap);
+
+        try {
+            initMap(gmap);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         return rootView;
     }
 
-    private void initMap(GoogleMap map) {
+    private void initMap(GoogleMap map) throws InterruptedException {
 
         final float msk_lat = (float) 55.75;
         final float msk_lng = (float) 37.61;
@@ -73,7 +79,14 @@ public class Map extends Fragment {
         MarkerOptions markerOne = new MarkerOptions().position(new LatLng(msk_lat, msk_lng)).title("marker title");
 
         target = new PicassoMarker(map.addMarker(markerOne));
-        Picasso.with(getContext()).load("https://pp.vk.me/c633921/v633921379/154fd/uZbZsvwS2Q4.jpg").into(target);
+
+        Picasso.with(getContext()).
+                load("https://pp.vk.me/c411420/v411420975/9f08/sFtni-s1a1o.jpg").
+                resize(75, 75).
+                centerCrop().
+                transform(new CircleTransform()).
+                into(target);
+
     }
 
     private SupportMapFragment getMapFragment() {
@@ -109,6 +122,7 @@ public class Map extends Fragment {
     public class PicassoMarker implements Target {
 
         Marker mMarker;
+        boolean isFinished = false;
 
         PicassoMarker(Marker marker) {
             mMarker = marker;
@@ -131,6 +145,7 @@ public class Map extends Fragment {
 
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
             mMarker.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
+            isFinished = true;
         }
 
         public void onBitmapFailed(Drawable errorDrawable) {
