@@ -26,7 +26,7 @@ import com.squareup.picasso.Target;
 
 
 /**
- * Created by root on 9/3/16.
+ * Created by kic on 9/3/16.
  */
 
 public class Map extends Fragment {
@@ -105,7 +105,7 @@ public class Map extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        //ServiceHelper serviceHelper = new ServiceHelper(getActivity().getApplicationContext());
+        //ApiHelper serviceHelper = new ApiHelper(getActivity().getApplicationContext());
         //serviceHelper.getUserAlbumsLink(currentUser);
     }
 

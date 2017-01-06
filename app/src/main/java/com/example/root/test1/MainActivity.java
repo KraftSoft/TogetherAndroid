@@ -8,13 +8,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.root.test1.fragments.Map;
+import com.example.root.test1.serviceHelpers.ApiHelper;
+import com.example.root.test1.serviceHelpers.NetworkResultReceiver;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, NetworkResultReceiver.Receiver {
 
     public Map map;
 
@@ -76,8 +79,6 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        FragmentTransaction fragmentTransaction = null;
-
         if (id == R.id.nav_camera) {
             // Handle the camera action
         } else {
@@ -85,10 +86,10 @@ public class MainActivity extends AppCompatActivity
 
                 map = new Map();
 
-                fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.container, map);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
+                ApiHelper apiHelper = new ApiHelper(getApplicationContext());
+                apiHelper.getMeetingsList();
+
+
                 setTitle("Lolo");
 
             } else if (id == R.id.nav_slideshow) {
@@ -105,5 +106,16 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onReceiveResult(int resultCode, Bundle resultData) {
+        Log.d("Lol", "Lol");
+
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
+        fragmentTransaction.replace(R.id.container, map);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }
