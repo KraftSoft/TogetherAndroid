@@ -36,6 +36,7 @@ public class ApiHelper {
 
         Intent intent = new Intent(context, ApiService.class);
         intent.putExtra("url", url);
+        intent.putExtra("type", "list");
         intent.putExtra("interestedObjectFromJSONResponse",
                 new String[]{"field1", "field2"});
         context.startService(intent);

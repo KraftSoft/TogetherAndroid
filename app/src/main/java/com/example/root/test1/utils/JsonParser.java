@@ -2,6 +2,7 @@ package com.example.root.test1.utils;
 
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,7 +25,29 @@ import java.util.Map;
 public class JsonParser {
     public static final String log_json = "JsonParserLogs";
 
-    private static String reader_to_string(Reader rd) throws IOException {
+    public JSONObject getObject(String url) throws IOException, JSONException {
+        JSONObject jsonResult = null;
+
+        String jsonString = getJSONbyURL(url);
+        jsonResult = new JSONObject(jsonString);
+
+        return jsonResult;
+    }
+
+    public JSONArray getList(String url) throws IOException, JSONException {
+        JSONArray jsonResult = null;
+
+        String jsonString = getJSONbyURL(url);
+        if (jsonString != null) {
+            jsonResult = new JSONArray(jsonString);
+        }
+        else {
+            Log.e(log_json, "can not get response"); // TODO TOAST
+        }
+        return jsonResult;
+    }
+
+    private String reader_to_string(Reader rd) throws IOException {
         StringBuilder sb = new StringBuilder();
         int cp;
         while ((cp = rd.read()) != -1) {
@@ -37,10 +60,10 @@ public class JsonParser {
         return sb.toString();
     }
 
-    public static JSONObject getJsonFromUrl(String url) throws IOException, JSONException {
+    private String getJSONbyURL(String url) throws IOException {
 
-        JSONObject jsonResult = null;
         BufferedReader rd = null;
+        String resultJson = null;
 
         try {
 
@@ -52,8 +75,8 @@ public class JsonParser {
 
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 rd = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), Charset.forName("UTF-8")));
-                String jsonString = reader_to_string(rd);
-                jsonResult = new JSONObject(jsonString);
+
+                resultJson = reader_to_string(rd);
             }
             else if (responseCode == HttpURLConnection.HTTP_FORBIDDEN) {
                 Log.e(log_json, "Authorization token problems");
@@ -67,6 +90,7 @@ public class JsonParser {
             if (rd != null)
                 rd.close();
         }
-        return jsonResult;
+        return resultJson;
     }
+
 }
