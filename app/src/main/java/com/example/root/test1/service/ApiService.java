@@ -8,6 +8,7 @@ import android.util.Log;
 import com.example.root.test1.R;
 import com.example.root.test1.responseObjects.MeetingMapAction;
 import com.example.root.test1.responseObjects.ResponseAction;
+import com.example.root.test1.serviceHelpers.ApiHelper;
 import com.example.root.test1.utils.JsonParser;
 
 import org.json.JSONArray;
@@ -40,7 +41,7 @@ public class ApiService extends IntentService {
 
     public ApiService() {
         super("ApiService");
-        actionsResponse.put("meetings-list", new MeetingMapAction());
+        actionsResponse.put(ApiHelper.ACTION_MEETINGS_LIST, new MeetingMapAction());
     }
 
     @Override

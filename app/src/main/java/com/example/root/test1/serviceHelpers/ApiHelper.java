@@ -13,6 +13,8 @@ import com.example.root.test1.service.ApiService;
 
 public class ApiHelper {
 
+    public final static String ACTION_MEETINGS_LIST = "meetings-list";
+
     private String API_HOST_URL;
 
     private Context context;
@@ -27,18 +29,21 @@ public class ApiHelper {
     }
 
 
-    public void getMeetingsList() {
+    public void getMeetingsList(NetworkResultReceiver receiver) {
         // TODO safekeeping
-        String user_id = "";
-        String access_token = "";
 
         String url = API_HOST_URL + "/meetings-list/";
 
         Intent intent = new Intent(context, ApiService.class);
+
         intent.putExtra("url", url);
         intent.putExtra("type", "list");
+        intent.putExtra("action", ACTION_MEETINGS_LIST);
         intent.putExtra("interestedObjectFromJSONResponse",
                 new String[]{"field1", "field2"});
+
+        intent.putExtra("receiver", receiver);
+
         context.startService(intent);
     }
 }

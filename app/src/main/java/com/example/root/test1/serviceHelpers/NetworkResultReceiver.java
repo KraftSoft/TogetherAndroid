@@ -3,7 +3,7 @@ package com.example.root.test1.serviceHelpers;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.ResultReceiver;
+import android.support.v4.os.ResultReceiver;
 
 /**
  * Created by kic on 1/6/17.

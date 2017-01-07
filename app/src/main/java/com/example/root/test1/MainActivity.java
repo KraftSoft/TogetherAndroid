@@ -14,12 +14,11 @@ import android.view.MenuItem;
 
 import com.example.root.test1.fragments.Map;
 import com.example.root.test1.serviceHelpers.ApiHelper;
-import com.example.root.test1.serviceHelpers.NetworkResultReceiver;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, NetworkResultReceiver.Receiver {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
-    public Map map;
+    public Map mapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,11 +83,13 @@ public class MainActivity extends AppCompatActivity
         } else {
             if (id == R.id.nav_gallery) {
 
-                map = new Map();
+                mapFragment = new Map();
 
-                ApiHelper apiHelper = new ApiHelper(getApplicationContext());
-                apiHelper.getMeetingsList();
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
+                fragmentTransaction.replace(R.id.container, mapFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
 
                 setTitle("Lolo");
 
@@ -106,16 +107,5 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Override
-    public void onReceiveResult(int resultCode, Bundle resultData) {
-        Log.d("Lol", "Lol");
-
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-
-        fragmentTransaction.replace(R.id.container, map);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
     }
 }

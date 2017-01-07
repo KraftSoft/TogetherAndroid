@@ -14,7 +14,10 @@ import java.io.IOException;
 /**
  * Created by kic on 1/7/17.
  */
-public class BaseAction {
+
+abstract class BaseAction {
+
+    protected abstract void handleItem(JSONObject jsonObject) throws JSONException;
 
     protected void handleObject(String urlString, Intent intent) {
 
@@ -58,9 +61,9 @@ public class BaseAction {
             String[] interestedObjects = intent.getStringArrayExtra("interestedObjectFromJSONResponse");
 
             for (int i = 0; i < responseJson.length(); i++) {
-                JSONObject a = responseJson.getJSONObject(i);
+                JSONObject listItem = responseJson.getJSONObject(i);
+                handleItem(listItem);
 
-                int b = 0;
             }
 
         }

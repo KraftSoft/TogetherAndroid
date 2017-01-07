@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -11,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.root.test1.R;
+import com.example.root.test1.responseObjects.Meeting;
+import com.example.root.test1.serviceHelpers.ApiHelper;
+import com.example.root.test1.serviceHelpers.NetworkResultReceiver;
 import com.example.root.test1.utils.CircleTransform;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,17 +28,21 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.util.ArrayList;
+
 
 /**
  * Created by kic on 9/3/16.
  */
 
-public class Map extends Fragment {
+public class Map extends Fragment implements NetworkResultReceiver.Receiver {
 
-    public MapView mMapView = null;
+    public MapView mMapView;
     public GoogleMap gmap;
 
-    private String key = null;
+    private String key;
+    private ApiHelper apiHelper;
+    private NetworkResultReceiver networkResultReceiver;
 
 
     @Override
@@ -42,6 +50,9 @@ public class Map extends Fragment {
                              Bundle savedInstanceState) {
 
         //ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+
+        networkResultReceiver = new NetworkResultReceiver(new Handler());
+        networkResultReceiver.setReceiver(this);
 
         key = getString(R.string.KEY);
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
@@ -63,6 +74,9 @@ public class Map extends Fragment {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        apiHelper = new ApiHelper(getActivity().getApplicationContext());
+        apiHelper.getMeetingsList(networkResultReceiver);
 
         return rootView;
     }
@@ -105,8 +119,6 @@ public class Map extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        //ApiHelper serviceHelper = new ApiHelper(getActivity().getApplicationContext());
-        //serviceHelper.getUserAlbumsLink(currentUser);
     }
 
     @Override
@@ -117,6 +129,11 @@ public class Map extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onReceiveResult(int resultCode, Bundle resultData) {
+        ArrayList<Meeting> meetingList = (ArrayList<Meeting>) resultData.getSerializable("meetingsList");
     }
 
     public class PicassoMarker implements Target {
