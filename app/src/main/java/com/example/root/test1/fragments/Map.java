@@ -43,7 +43,7 @@ public class Map extends Fragment implements NetworkResultReceiver.Receiver {
     private String key;
     private ApiHelper apiHelper;
     private NetworkResultReceiver networkResultReceiver;
-
+    private ArrayList<Meeting> meetingList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,7 +70,7 @@ public class Map extends Fragment implements NetworkResultReceiver.Receiver {
         gmap = mMapView.getMap();
 
         try {
-            initMap(gmap);
+            initMap();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -81,7 +81,7 @@ public class Map extends Fragment implements NetworkResultReceiver.Receiver {
         return rootView;
     }
 
-    private void initMap(GoogleMap map) throws InterruptedException {
+    private void initMap() throws InterruptedException {
 
         final float msk_lat = (float) 55.75;
         final float msk_lng = (float) 37.61;
@@ -92,7 +92,7 @@ public class Map extends Fragment implements NetworkResultReceiver.Receiver {
 
         MarkerOptions markerOne = new MarkerOptions().position(new LatLng(msk_lat, msk_lng)).title("marker title");
 
-        target = new PicassoMarker(map.addMarker(markerOne));
+        target = new PicassoMarker(gmap.addMarker(markerOne));
 
         Picasso.with(getContext()).
                 load("https://pp.vk.me/c411420/v411420975/9f08/sFtni-s1a1o.jpg").
@@ -133,7 +133,28 @@ public class Map extends Fragment implements NetworkResultReceiver.Receiver {
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
-        ArrayList<Meeting> meetingList = (ArrayList<Meeting>) resultData.getSerializable("meetingsList");
+        meetingList = (ArrayList<Meeting>) resultData.getSerializable("meetingsList");
+        PicassoMarker target;
+        MarkerOptions markerOne;
+
+
+        if (meetingList != null) {
+
+            for (Meeting m: meetingList) {
+
+
+                markerOne = new MarkerOptions().position(m.getCoordinates()).title("marker title");
+
+                target = new PicassoMarker(gmap.addMarker(markerOne));
+
+                Picasso.with(getContext()).
+                        load("https://pp.vk.me/c411420/v411420975/9f08/sFtni-s1a1o.jpg").
+                        resize(75, 75).
+                        centerCrop().
+                        transform(new CircleTransform()).
+                        into(target);
+            }
+        }
     }
 
     public class PicassoMarker implements Target {

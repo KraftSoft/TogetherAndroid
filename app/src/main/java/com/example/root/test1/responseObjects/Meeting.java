@@ -43,6 +43,11 @@ public class Meeting implements Serializable {
     private String description;
     private ArrayList<Member> members = new ArrayList<Member>();
     private JSONObject owner;
+
+    public LatLng getCoordinates() {
+        return coordinates;
+    }
+
     private LatLng coordinates;
     private Date dateCreate;
 
@@ -53,8 +58,14 @@ public class Meeting implements Serializable {
         title = meeting.getString("title");
         description = meeting.getString("description");
 
-        JSONArray rawMembers = meeting.getJSONArray("members");
+        JSONObject rawCoordinates;rawCoordinates = meeting.getJSONObject("coordinates");
 
+        double coordsLat = rawCoordinates.getDouble("lat");
+        double coordsLng = rawCoordinates.getDouble("lng");
+
+        coordinates = new LatLng(coordsLat, coordsLng);
+
+        JSONArray rawMembers = meeting.getJSONArray("members");
         for(int i = 0; i < rawMembers.length(); ++i) {
             members.add(new Member((JSONObject) rawMembers.get(i)));
         }
