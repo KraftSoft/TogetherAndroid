@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.os.ResultReceiver;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * Created by kic on 1/6/17.
  */
@@ -13,7 +15,7 @@ import android.support.v4.os.ResultReceiver;
 public class NetworkResultReceiver extends ResultReceiver {
 
         public interface Receiver {
-            public void onReceiveResult(int resultCode, Bundle resultData);
+            public void onReceiveResult(int resultCode, Bundle resultData) throws UnsupportedEncodingException, InterruptedException;
 
         }
 
@@ -32,7 +34,11 @@ public class NetworkResultReceiver extends ResultReceiver {
         protected void onReceiveResult(int resultCode, Bundle resultData) {
 
             if (mReceiver != null) {
-                mReceiver.onReceiveResult(resultCode, resultData);
+                try {
+                    mReceiver.onReceiveResult(resultCode, resultData);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
 

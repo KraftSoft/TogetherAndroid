@@ -1,4 +1,4 @@
-package com.example.root.test1.responseObjects;
+package com.example.root.test1.responseActions;
 
 import android.content.Intent;
 

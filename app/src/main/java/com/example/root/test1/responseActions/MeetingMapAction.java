@@ -1,9 +1,11 @@
-package com.example.root.test1.responseObjects;
+package com.example.root.test1.responseActions;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.os.ResultReceiver;
 import android.util.Log;
+
+import com.example.root.test1.apiObjects.Meeting;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,18 +24,23 @@ public class MeetingMapAction extends BaseAction implements ResponseAction {
 
         String urlString = intent.getStringExtra("url");
         final String responseType = intent.getStringExtra("type");
+        int code;
 
         if (responseType.equals("list")) {
             handleList(urlString, intent);
+            code = 0;
         }
         else {
             Log.e("error", "wrong response type for meetings list");
+            code = 1;
         }
 
         ResultReceiver receiver = intent.getParcelableExtra("receiver");
+
         Bundle bundle = new Bundle();
         bundle.putSerializable("meetingsList", meetingList);
-        receiver.send(0, bundle);
+
+        receiver.send(code, bundle);
     }
 
     @Override

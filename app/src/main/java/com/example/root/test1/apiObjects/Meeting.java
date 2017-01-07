@@ -1,6 +1,4 @@
-package com.example.root.test1.responseObjects;
-
-import android.content.Intent;
+package com.example.root.test1.apiObjects;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -42,7 +40,12 @@ public class Meeting implements Serializable {
     private String title;
     private String description;
     private ArrayList<Member> members = new ArrayList<Member>();
-    private JSONObject owner;
+
+    public Member getOwner() {
+        return owner;
+    }
+
+    private Member owner;
 
     public LatLng getCoordinates() {
         return coordinates;
@@ -58,7 +61,11 @@ public class Meeting implements Serializable {
         title = meeting.getString("title");
         description = meeting.getString("description");
 
-        JSONObject rawCoordinates;rawCoordinates = meeting.getJSONObject("coordinates");
+        JSONObject rawOwner = meeting.getJSONObject("owner");
+        owner = new Member(rawOwner);
+
+        JSONObject rawCoordinates;
+        rawCoordinates = meeting.getJSONObject("coordinates");
 
         double coordsLat = rawCoordinates.getDouble("lat");
         double coordsLng = rawCoordinates.getDouble("lng");

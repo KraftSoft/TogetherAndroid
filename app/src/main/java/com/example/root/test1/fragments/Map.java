@@ -7,12 +7,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.root.test1.R;
-import com.example.root.test1.responseObjects.Meeting;
+import com.example.root.test1.apiObjects.Meeting;
 import com.example.root.test1.serviceHelpers.ApiHelper;
 import com.example.root.test1.serviceHelpers.NetworkResultReceiver;
 import com.example.root.test1.utils.CircleTransform;
@@ -28,6 +29,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 
 
@@ -37,6 +41,8 @@ import java.util.ArrayList;
 
 public class Map extends Fragment implements NetworkResultReceiver.Receiver {
 
+    public static final int AVATAR_SIZE = 80;
+
     public MapView mMapView;
     public GoogleMap gmap;
 
@@ -44,6 +50,12 @@ public class Map extends Fragment implements NetworkResultReceiver.Receiver {
     private ApiHelper apiHelper;
     private NetworkResultReceiver networkResultReceiver;
     private ArrayList<Meeting> meetingList;
+
+    public ArrayList<PicassoMarker> getTargetsList() {
+        return targetsList;
+    }
+
+    private ArrayList<PicassoMarker> targetsList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,21 +97,9 @@ public class Map extends Fragment implements NetworkResultReceiver.Receiver {
 
         final float msk_lat = (float) 55.75;
         final float msk_lng = (float) 37.61;
-        final float initZoom = (float) 11.5;
-        PicassoMarker target;
+        final float initZoom = (float) 10.5;
 
         gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(msk_lat, msk_lng), initZoom));
-
-        MarkerOptions markerOne = new MarkerOptions().position(new LatLng(msk_lat, msk_lng)).title("marker title");
-
-        target = new PicassoMarker(gmap.addMarker(markerOne));
-
-        Picasso.with(getContext()).
-                load("https://pp.vk.me/c411420/v411420975/9f08/sFtni-s1a1o.jpg").
-                resize(75, 75).
-                centerCrop().
-                transform(new CircleTransform()).
-                into(target);
 
     }
 
@@ -133,10 +133,14 @@ public class Map extends Fragment implements NetworkResultReceiver.Receiver {
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
+
         meetingList = (ArrayList<Meeting>) resultData.getSerializable("meetingsList");
+
         PicassoMarker target;
+        targetsList = new ArrayList<>();
         MarkerOptions markerOne;
 
+        int cycle = 0;
 
         if (meetingList != null) {
 
@@ -146,21 +150,34 @@ public class Map extends Fragment implements NetworkResultReceiver.Receiver {
                 markerOne = new MarkerOptions().position(m.getCoordinates()).title("marker title");
 
                 target = new PicassoMarker(gmap.addMarker(markerOne));
+                targetsList.add(target);
+
+                String avatar = "";
+
+                try {
+                    avatar = URLDecoder.decode(m.getOwner().getAvatar(), "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
 
                 Picasso.with(getContext()).
-                        load("https://pp.vk.me/c411420/v411420975/9f08/sFtni-s1a1o.jpg").
-                        resize(75, 75).
+                        load(avatar).
+                        resize(AVATAR_SIZE, AVATAR_SIZE).
                         centerCrop().
                         transform(new CircleTransform()).
                         into(target);
+
+                ++cycle;
             }
         }
+
+        targetsList.clear();
     }
 
     public class PicassoMarker implements Target {
 
         Marker mMarker;
-        boolean isFinished = false;
+        int loadIndicator = 0;
 
         PicassoMarker(Marker marker) {
             mMarker = marker;
@@ -183,11 +200,11 @@ public class Map extends Fragment implements NetworkResultReceiver.Receiver {
 
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
             mMarker.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
-            isFinished = true;
+            loadIndicator = 1;
         }
 
         public void onBitmapFailed(Drawable errorDrawable) {
-            int a = 0;
+            loadIndicator = -1;
         }
 
         @Override

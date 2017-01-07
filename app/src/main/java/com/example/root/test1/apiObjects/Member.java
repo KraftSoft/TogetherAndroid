@@ -1,4 +1,4 @@
-package com.example.root.test1.responseObjects;
+package com.example.root.test1.apiObjects;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,6 +14,7 @@ public class Member implements Serializable {
     private String userName;
     private String about;
     private String firstName;
+    private String avatar;
 
     public Member(JSONObject member) throws JSONException {
 
@@ -21,6 +22,11 @@ public class Member implements Serializable {
         userName = member.getString("username");
         about = member.getString("about");
         firstName = member.getString("first_name");
+        avatar = member.getString("avatar");
 
+    }
+
+    public String getAvatar() {
+        return avatar;
     }
 }
