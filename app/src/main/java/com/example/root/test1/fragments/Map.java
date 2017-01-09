@@ -17,6 +17,7 @@ import com.example.root.test1.apiObjects.Meeting;
 import com.example.root.test1.serviceHelpers.ApiHelper;
 import com.example.root.test1.serviceHelpers.NetworkResultReceiver;
 import com.example.root.test1.utils.CircleTransform;
+import com.example.root.test1.utils.CustomInfoWindowAdapter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -80,6 +81,9 @@ public class Map extends Fragment implements NetworkResultReceiver.Receiver {
         }
 
         gmap = mMapView.getMap();
+
+        CustomInfoWindowAdapter infoWindowAdapter = new  CustomInfoWindowAdapter(getActivity());
+        gmap.setInfoWindowAdapter(infoWindowAdapter);
 
         try {
             initMap();
