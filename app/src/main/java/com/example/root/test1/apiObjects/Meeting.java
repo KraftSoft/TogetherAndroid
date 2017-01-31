@@ -2,14 +2,12 @@ package com.example.root.test1.apiObjects;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -39,13 +37,12 @@ public class Meeting implements Serializable {
     private Integer ID;
     private String title;
     private String description;
-    private ArrayList<Member> members = new ArrayList<Member>();
 
-    public Member getOwner() {
+    public User getOwner() {
         return owner;
     }
 
-    private Member owner;
+    private User owner;
 
     public LatLng getCoordinates() {
         return coordinates;
@@ -62,7 +59,7 @@ public class Meeting implements Serializable {
         description = meeting.getString("description");
 
         JSONObject rawOwner = meeting.getJSONObject("owner");
-        owner = new Member(rawOwner);
+        owner = new User(rawOwner);
 
         JSONObject rawCoordinates;
         rawCoordinates = meeting.getJSONObject("coordinates");
@@ -71,11 +68,6 @@ public class Meeting implements Serializable {
         double coordsLng = rawCoordinates.getDouble("lng");
 
         coordinates = new LatLng(coordsLat, coordsLng);
-
-        JSONArray rawMembers = meeting.getJSONArray("members");
-        for(int i = 0; i < rawMembers.length(); ++i) {
-            members.add(new Member((JSONObject) rawMembers.get(i)));
-        }
 
     }
 

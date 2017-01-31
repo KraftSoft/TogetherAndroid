@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * Created by kic on 1/7/17.
  */
-public class Member implements Serializable {
+public class User implements Serializable {
 
     private Integer ID;
     private String userName;
@@ -16,7 +16,7 @@ public class Member implements Serializable {
     private String firstName;
     private String avatar;
 
-    public Member(JSONObject member) throws JSONException {
+    public User(JSONObject member) throws JSONException {
 
         ID = member.getInt("id");
         userName = member.getString("username");

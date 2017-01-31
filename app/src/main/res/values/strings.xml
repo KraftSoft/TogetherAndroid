@@ -7,7 +7,7 @@
     <string name="action_settings">Settings</string>
     <string name="KEY">AIzaSyCCTCJw3zT7zyMhMn3xGLnOEQxJiei2DlA</string>
 
-    <string name="SERVER_HOST">http://192.168.0.164:8000</string>
+    <string name="SERVER_HOST">http://185.76.147.143</string>
     <string name="mapTitle">Активные события</string>
 
 </resources>
